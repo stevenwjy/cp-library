@@ -26,8 +26,8 @@ struct Combin {
 
     int compute(int v, int k) {
         if (k > v || k < 0 || v <= 0) return 0;
-        if (inv[k] == -1) inv[k] = fastPow(k, mod - 2, mod);
-        if (inv[v - k] == -1) inv[v - k] = fastPow(v - k, mod - 2, mod);
+        if (inv[k] == -1) inv[k] = fastPow(fact[k], mod - 2, mod);
+        if (inv[v - k] == -1) inv[v - k] = fastPow(fact[v - k], mod - 2, mod);
 
         int ret = (1LL * fact[v] * inv[v - k]) % mod;
         ret = (1LL * ret * inv[k]) % mod;
