@@ -50,7 +50,7 @@ struct SuffixArray {
             sr.psb({val[i], i});
         sort(ALL(sr));
 
-        rank[0][sr[0].se] = 0;
+        rank[0][sr[0].se] = 1;
         ord[0] = sr[0].se;
 
         for (int i = 1; i < n; ++i) {
@@ -61,6 +61,8 @@ struct SuffixArray {
 
             ord[i] = sr[i].se;
         }
+
+        LOGN = 0;
     }
 
     void printOrd() {
@@ -78,15 +80,19 @@ struct SuffixArray {
     void computeSA() {
         initRank();
         
-        for (int k = 1; (1 << k) <= n; ++k) {
+        for (int k = 1; ; ++k) {
+            if (rank[LOGN][ord[n - 1]] == n) return;
+            assert((1 << k) <= n);
+
+            LOGN = k;
+
             int off = 1 << (k - 1);
 
             countSort(k - 1, off);
             countSort(k - 1, 0);
         
-            rank[k][ord[0]] = 0;
+            rank[k][ord[0]] = 1;
             for (int i = 1; i < n; ++i) {
-
                 int ra = ord[i - 1] + off < n ? rank[k - 1][ord[i - 1] + off] : 0;
                 int rb = ord[i]     + off < n ? rank[k - 1][ord[i]     + off] : 0;
 
@@ -95,16 +101,22 @@ struct SuffixArray {
                 else
                     rank[k][ord[i]] = rank[k][ord[i - 1]] + 1;
             }
-
-            LOGN = k;
-
-            if (rank[k][ord[n - 1]] == (n - 1))
-                break;
         }
     }
 
     void computeInv() {
         for (int i = 0; i < n; ++i)
             inv[ord[i]] = i;
+    }
+
+    int getLCP(int a, int b) {
+        int ret = 0;
+        for (int i = LOGN; i >= 0 && a < n && b < n; --i) 
+            if (rank[i][a] == rank[i][b]) {
+                ret += (1 << i);
+                a += (1 << i);
+                b += (1 << i);
+            }
+        return ret;
     }
 };
