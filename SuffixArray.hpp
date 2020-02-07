@@ -82,7 +82,6 @@ struct SuffixArray {
         
         for (int k = 1; ; ++k) {
             if (rank[LOGN][ord[n - 1]] == n) return;
-            assert((1 << k) <= n);
 
             LOGN = k;
 
